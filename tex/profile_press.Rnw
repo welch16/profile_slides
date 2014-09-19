@@ -42,6 +42,18 @@
 
 \begin{document}
 
+<<<setup, include=FALSE, cache=FALSE>>=
+library(knitr)
+knit_hooks$set(packages = function(before, options, envir) {
+  if (before) {
+    ## load packages before a chunk is executed
+    for (p in options$packages) library(p, character.only = TRUE)
+  }
+})
+figsdir = "figs/generated"
+@ 
+
+
 \begin{frame}
   \maketitle
 \end{frame}
@@ -63,6 +75,24 @@
 
 
 \begin{frame}
+
+
+\only<1>{
+\begin{itemize}
+\item The double stranded {\color{RoyalBlue} DNA}
+\end{itemize}}
+\only<2>{
+\begin{itemize}
+\item There is an interaction with a protein (TF or histone)
+\end{itemize}}
+\only<3>{
+\begin{itemize}
+\item The protein is removed by an antibody
+\end{itemize}}
+\only<4-6>{
+\begin{itemize}
+\item The DNA is fragmented by sonication
+\end{itemize}}
 
 \begin{figure}[h!]
 \centering
@@ -101,9 +131,67 @@
 \end{figure}
 \end{frame}
 
-\begin{frame}[t]
 
 
+<<test, packages=c('GenomicRanges', 'ggplot2'),include=FALSE,echo=TRUE,eval=TRUE>>=
+peaksim <- function(nreads,mu,p,delta,sigma2,readLength)
+{  
+  strand = runif(nreads) >  p  # TRUE means Fwd, FALSE means Bwd
+  fwd_pos = sum(strand)
+  bwd_pos = nreads - fwd_pos
+  fwd_start = round(rnorm(fwd_pos,mu - delta, sd = sqrt(sigma2)),0)
+  bwd_start = round(rnorm(bwd_pos,mu + delta, sd = sqrt(sigma2)),0)
+  peakReads = c(
+    GRanges(seqnames = "sim",ranges = IRanges(start = fwd_start,width = readLength),strand = "+"),
+    GRanges(seqnames = "sim",ranges = IRanges(end = bwd_start,width = readLength),strand = "-"))
+  return(peakReads)
+}
+
+plotPeak <- function(peak,m)
+{
+  fwd_reads = suppressWarnings(subset(peak,subset = strand(peak)=="+"))
+  bwd_reads = suppressWarnings(subset(peak,subset = strand(peak)=="-"))
+  fwd_cov = coverage(fwd_reads)[[1]]
+  bwd_cov = coverage(bwd_reads)[[1]]  
+  x = 1:m
+  fwd_xp = runLength(fwd_cov)[1:(nrun(fwd_cov))]
+  fwd_yp = c(runValue(fwd_cov) ,0)
+  fwd_y = stepfun(cumsum(fwd_xp),fwd_yp)(x)
+  bwd_xp = runLength(bwd_cov)[1:(nrun(bwd_cov))]
+  bwd_yp = c(runValue(bwd_cov),0)
+  bwd_y = stepfun(cumsum(bwd_xp),bwd_yp)(x)
+  fwd = data.frame(coord = x,counts = fwd_y,strand = "fwd")
+  bwd = data.frame(coord = x,counts = bwd_y,strand = "bwd")
+  df = rbind(fwd,bwd)
+#  mm = max(c(fwd_y,bwd_y))
+#  yl = 1.2 * c(0,mm)
+  df$strand = factor(df$strand,levels = c("fwd","bwd"))
+  peakPlot = ggplot(df,aes(coord,counts,colour = strand))+geom_line()+scale_colour_manual(values = c("red","blue"))+
+    theme(legend.position = "top",text = element_text(size = 20))+xlab("genomic coordinate")
+  return(peakPlot)
+}  
+
+nreads = 1000
+mu = 250
+p = .5
+delta = 75
+sigma2 = 2350
+readLength = 51
+
+peakReads = peaksim(nreads,mu,p,delta,sigma2,readLength)
+pdf(file = file.path(figsdir,"peak.pdf"),width =12,height = 6)
+p = plotPeak(peakReads,500)
+print(p)
+dev.off()
+@ 
+
+
+\begin{frame}
+\frametitle{A typical peak}
+
+\begin{figure}
+\includegraphics[width = .8\textwidth]{figs/generated/peak.pdf}
+\end{figure}
 
 \end{frame}
 
