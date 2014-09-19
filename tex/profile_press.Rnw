@@ -1,0 +1,111 @@
+\documentclass[table,xcolor=dvipsnames]{beamer}
+
+
+\usepackage{xcolor}
+\usepackage{url}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{multicol}
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{hyperref}
+\usepackage{multicol}
+\usepackage{multirow}
+\usepackage{/u/w/e/welch/R-3.1.0/share/texmf/tex/latex/Sweave}
+
+\usepackage{pifont}% http://ctan.org/pkg/pifont
+
+
+
+
+\usetheme{Szeged}
+\usecolortheme[named=RoyalBlue]{structure}
+%\usecolortheme[accent=blue]{solarized}
+
+
+% Personal Data
+\title{How to use the profile package}
+\date{April 2014}
+\author{Rene Welch}
+\institute{University of Wisconsin - Madison}
+
+
+\setbeamertemplate{sections/subsections in toc}[square] % This is to remove the symbols of the slides
+\setbeamertemplate{navigation symbols}{} % This is to convert the "3d" spheres to squares on toc
+\setbeamertemplate{itemize item}[square] % This is to convert the "3d" spheres to squares on enumerate
+
+
+
+\begin{document}
+
+\begin{frame}
+  \maketitle
+\end{frame}
+
+\begin{frame}
+\tableofcontents
+\end{frame}
+
+
+\section{A typical ChIP-Seq experiment}
+\begin{frame}
+\frametitle{A typical ChIP-Seq experiment}
+
+\begin{figure}
+  \includegraphics[width = .75\textwidth]{figs/fromPapers/parkOverview.png}
+\caption{From Park's ChIP-seq: Advantages and challenges of a maturing technology} 
+\end{figure}
+\end{frame}
+
+
+\begin{frame}
+
+\begin{figure}[h!]
+\centering
+\begin{tikzpicture}
+
+\uncover<1->{\draw [line width=10,color=red] (0,1) -- (10,1); 
+             \node [color=red] at (-.5,1) {5'};
+             \node [color=red] at (10.5,1) {3'};
+             \draw [line width=10,color=blue] (0,0) -- (10,0);
+             \node [color=blue] at (-.5,0) {3'};
+             \node [color=blue] at (10.5,0) {5'};}
+\uncover<2>{\draw [color=yellow,fill=yellow] (5,1.5) circle [radius=1.5];
+             \node at (5,2) {\huge{Protein}};}
+\uncover<3-4>{\draw [color=yellow,fill=yellow] (5,3.5) circle [radius=1.5];
+             \node at (5,4) {\huge{Protein}};}
+\uncover<4->{\draw [->,line width=3,color=black] (2,-1) -- (2,0);
+             \draw [->,line width=3,color=black] (3,-1) -- (3,0);
+             \draw [->,line width=3,color=black] (7.5,-1) -- (7.5,0);
+             \draw [->,line width=3,color=black] (6.7,-1) -- (6.7,0);
+             \draw [line width=2,color=black,dashed] (2,-1) -- (2,1);
+             \draw [line width=2,color=black,dashed] (3,-1) -- (3,1);
+             \draw [line width=2,color=black,dashed] (7.5,-1) -- (7.5,1);
+             \draw [line width=2,color=black,dashed] (6.7,-1) -- (6.7,1);
+             \node [color=black] at (9.5,-.5) {\large{Fragmentation}};}
+\uncover<5->{\draw [line width=3,color=red] (2,1.5) -- (4,1.5);
+             \draw [line width=3,color=red] (3,1.8) -- (5,1.8);
+             \draw [line width=3,color=blue] (5.5,1.5) -- (7.5,1.5);
+             \draw [line width=3,color=blue] (4.7,2.3) -- (6.7,2.3);}
+\uncover<6->{\draw [line width=3,color=red] (3.3,2) -- (5.3,2);
+             \draw [line width=3,color=red] (2.5,1.6) -- (4.5,1.6);
+             \draw [line width=3,color=red] (3.7,2.2) -- (5.7,2.2);
+             \draw [line width=3,color=blue] (5.3,1.7) -- (7.3,1.7);
+             \draw [line width=3,color=blue] (4.5,2.5) -- (6.5,2.5);}
+
+\end{tikzpicture}
+\end{figure}
+\end{frame}
+
+\begin{frame}[t]
+
+
+
+\end{frame}
+
+
+\end{document}
