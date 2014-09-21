@@ -133,7 +133,7 @@ figsdir = "figs/generated"
 
 
 
-<<test, packages=c('GenomicRanges', 'ggplot2'),include=FALSE,echo=TRUE,eval=TRUE>>=
+<<sim, packages=c('GenomicRanges', 'ggplot2'),include=FALSE,echo=FALSE,eval=FALSE>>=
 peaksim <- function(nreads,mu,p,delta,sigma2,readLength)
 {  
   strand = runif(nreads) >  p  # TRUE means Fwd, FALSE means Bwd
@@ -143,7 +143,8 @@ peaksim <- function(nreads,mu,p,delta,sigma2,readLength)
   bwd_start = round(rnorm(bwd_pos,mu + delta, sd = sqrt(sigma2)),0)
   peakReads = c(
     GRanges(seqnames = "sim",ranges = IRanges(start = fwd_start,width = readLength),strand = "+"),
-    GRanges(seqnames = "sim",ranges = IRanges(end = bwd_start,width = readLength),strand = "-"))
+    GRanges(seqnames = "sim",ranges = IRanges(end = bwd_start,width = readLength),strand = "-")
+    )  
   return(peakReads)
 }
 
@@ -187,11 +188,48 @@ dev.off()
 
 
 \begin{frame}
-\frametitle{A typical peak}
+\frametitle{A typical (simulated) peak}
 
 \begin{figure}
 \includegraphics[width = .8\textwidth]{figs/generated/peak.pdf}
 \end{figure}
+
+\end{frame}
+
+
+
+
+\section{How to use the profile package?}
+\subsection{How to input data}
+\begin{frame}[t]
+\frametitle{How to input data}
+
+For this example we are going to load the package and parameters:
+
+<<howtoload,include=FALSE,echo=FALSE,eval=TRUE>>=
+  library(profile)
+  source("../rscripts/all_functions.R")  
+@ 
+
+<<outputload,include=TRUE,tidy=TRUE>>=
+  library(profile)
+
+  regionName = "CTCF-K562"
+
+  fileFormat = "bam"
+
+  maxBandwidth = 301
+
+  bandwidth = 151
+
+  fragLen = 200
+
+  remChr = "chrY"
+
+  windowExt = 2000
+
+  mc.cores = 7
+@ 
 
 \end{frame}
 
