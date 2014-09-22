@@ -21,7 +21,8 @@ windowExt = 2000
 mc.cores = 7
 
 files = list.files(dir2)
-files = file.path(dir2,files[!grepl("bai",files)])
+filenames = files[!grepl("bai",files)]
+files = file.path(dir2,filenames)
 
 # Set profile object
 ourRegions = regions[[1]]
@@ -45,6 +46,7 @@ ourProfiles = lapply(ourProfiles,function(x)
 
 ourProfileMatrices = lapply(ourProfiles,function(x)
   ProfileMatrix(x,bandwidth,mc.cores))
+names(ourProfileMatrices) = c("H3k27ac","H3k4me1","H3k4me3")
 
 save(list = "ourProfileMatrices",file = "../data/generated/matrices.RData")
 
