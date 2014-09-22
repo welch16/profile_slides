@@ -7,17 +7,14 @@
 \usepackage{amsthm}
 \usepackage{amssymb}
 \usepackage{graphicx}
-\usepackage{multicol}
 \usepackage{tikz}
 \usetikzlibrary{shapes,arrows}
-\usepackage{graphicx}
 \usepackage{float}
-\usepackage{hyperref}
-\usepackage{multicol}
-\usepackage{multirow}
 \usepackage{/u/w/e/welch/R-3.1.0/share/texmf/tex/latex/Sweave}
 
-\usepackage{pifont}% http://ctan.org/pkg/pifont
+\usepackage{fancyvrb}
+
+%\usepackage{pifont}% http://ctan.org/pkg/pifont
 
 
 
@@ -29,7 +26,7 @@
 
 % Personal Data
 \title{How to use the profile package}
-\date{April 2014}
+\date{September 2014}
 \author{Rene Welch}
 \institute{University of Wisconsin - Madison}
 
@@ -39,11 +36,24 @@
 \setbeamertemplate{itemize item}[square] % This is to convert the "3d" spheres to squares on enumerate
 
 
+\DefineVerbatimEnvironment{Sinput}{Verbatim}
+{formatcom = {\color{Sinput}},fontsize=\scriptsize} 
+\DefineVerbatimEnvironment{Soutput}{Verbatim}
+{formatcom = {\color{Soutput}},fontsize=\footnotesize}
+\DefineVerbatimEnvironment{Scode}{Verbatim}
+{formatcom = {\color{Scode}},fontsize=\small}
+
+\ifdefined\knitrout
+  \renewenvironment{knitrout}{\begin{footnotesize}}{\end{footnotesize}}
+\else
+\fi
+
 
 \begin{document}
 
 <<<setup, include=FALSE, cache=FALSE>>=
 library(knitr)
+opts_chunk$set(fig.align='center',fig.show='hold',size='footnotesize')
 knit_hooks$set(packages = function(before, options, envir) {
   if (before) {
     ## load packages before a chunk is executed
@@ -117,10 +127,10 @@ figsdir = "figs/generated"
              \draw [line width=2,color=black,dashed] (7.5,-1) -- (7.5,1);
              \draw [line width=2,color=black,dashed] (6.7,-1) -- (6.7,1);
              \node [color=black] at (9.5,-.5) {\large{Fragmentation}};}
-\uncover<5->{\draw [line width=3,color=red] (2,1.5) -- (4,1.5);
-             \draw [line width=3,color=red] (3,1.8) -- (5,1.8);
-             \draw [line width=3,color=blue] (5.5,1.5) -- (7.5,1.5);
-             \draw [line width=3,color=blue] (4.7,2.3) -- (6.7,2.3);}
+\uncover<5->{\draw [->,line width=3,color=red] (2,1.5) -- (4,1.5);
+             \draw [->,line width=3,color=red] (3,1.8) -- (5,1.8);
+             \draw [->,line width=3,color=blue] (7.5,1.5) -- (5.5,1.5);
+             \draw [->,line width=3,color=blue] (6.7,2.3) -- (4.7,2.3);}
 \uncover<6->{\draw [line width=3,color=red] (3.3,2) -- (5.3,2);
              \draw [line width=3,color=red] (2.5,1.6) -- (4.5,1.6);
              \draw [line width=3,color=red] (3.7,2.2) -- (5.7,2.2);
@@ -202,13 +212,36 @@ dev.off()
 \section{How to use the profile package?}
 \subsection{How to input data}
 \begin{frame}[t]
-\frametitle{How to input data}
+\frametitle{Initial parameters}
 
 For this example we are going to load the package and parameters:
 
 <<howtoload,include=FALSE,echo=FALSE,eval=TRUE>>=
   library(profile)
-  source("../rscripts/all_functions.R")  
+  source("../rscripts/all_functions.R")
+  dir = "../data"
+  dir1 = file.path(dir,"regions")
+  dir2 = file.path(dir,"bam")
+  peakfiles = file.path(dir1,list.files(dir1))
+  regions = lapply(peakfiles,narrowPeakToGRanges)
+  
+  regionName = "CTCF-K562"
+  fileFormat = "bam"
+  maxBandwidth = 301
+  bandwidth = 151
+  fragLen = 200
+  remChr = "chrY"
+  windowExt = 2000
+  mc.cores = 7
+
+  files = list.files(dir2)
+  files = file.path(dir2,files[!grepl("bai",files)])
+
+  # Set profile object
+  ourRegions = regions[[1]]
+  start(ourRegions) = regions[[1]]$summit - windowExt
+  end(ourRegions) = regions[[1]]$summit + windowExt
+
 @ 
 
 <<outputload,include=TRUE,tidy=TRUE>>=
@@ -228,10 +261,39 @@ For this example we are going to load the package and parameters:
 
   windowExt = 2000
 
-  mc.cores = 7
+  mc.cores = 8
 @ 
 
 \end{frame}
+
+
+
+\begin{frame}
+
+\frametitle{A sample of our regions}
+
+We define our regions as:
+\begin{align}
+\text{start}^* = \text{summit} - \text{windowExt} \nonumber \\
+\text{end}^* = \text{summit} + \text{windowExt} \nonumber 
+\end{align}
+
+
+<<showRegions,results="asis">>=
+  kable(as.data.frame(ourRegions[1:5]),format="latex")
+@ 
+
+\end{frame}
+
+\section{How to generate the profiles}
+\begin{frame}
+\frametitle{How to generate the profiles}
+
+
+\end{frame}
+
+
+
 
 
 \end{document}
