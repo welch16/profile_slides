@@ -43,7 +43,7 @@ ourProfiles = lapply(ourProfiles,function(x)
 ourProfiles = lapply(ourProfiles,function(x)
   getCoverage(x,mc.cores))
 
-ourProfilesMatrices = lapply(ourProfiles,function(x)
+ourProfileMatrices = lapply(ourProfiles,function(x)
   ProfileMatrix(x,bandwidth,mc.cores))
 
 save(list = "ourProfileMatrices",file = "../data/generated/matrices.RData")
