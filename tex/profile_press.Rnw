@@ -287,10 +287,62 @@ We define our regions as:
 
 \section{How to generate the profiles}
 \begin{frame}
-\frametitle{How to generate the profiles}
+\frametitle{How to generate the profiles (1 of 2) }
+
+\begin{enumerate}
+\item We need to create {\color{RoyalBlue} profile} and then add regions to the  object:
+
+<<createProfile,include=TRUE,echo=TRUE,eval=FALSE,results="asis">>=
+  ourProfile = Profile(regionName,
+    files[1],
+    fileFormat,
+    maxBandwidth,
+    fragLen,
+    remChr)
+
+regions(ourProfile) = ourRegions
+@ 
+
+\item Then we load the reads:
+
+<<loadProfileReads,include=TRUE,echo=TRUE,eval=FALSE,results="asis">>=
+  ourProfile = loadReads(ourProfile,mc.cores)
+@ 
+
+\item And then match them to the regions:
+<<matchProfileReads,include=TRUE,echo=TRUE,eval=FALSE,results="asis">>=
+  ourProfile = matchReads(ourProfile,mc.cores)
+@ 
+\end{enumerate}
 
 
 \end{frame}
+
+\begin{frame}
+\frametitle{How to generate the profiles (2 of 2) }
+
+
+\begin{enumerate}
+\addtocounter{enumi}{3}
+\item Calculate the coverage:
+
+<<calcCoverage,include=TRUE,echo=TRUE,eval=FALSE,results="asis">>=
+ourProfile = getCoverage(ourProfile,mc.cores)
+@ 
+
+\item And finally, calculate the profile matrix:
+
+<<calcProfileMatrix,include=TRUE,echo=TRUE,eval=FALSE,results="asis">>=
+ourProfileMatrix = ProfileMatrix(ourProfile,
+  bandwidth,
+  mc.cores)
+@ 
+
+\end{enumerate}
+
+
+\end{frame}
+
 
 
 
