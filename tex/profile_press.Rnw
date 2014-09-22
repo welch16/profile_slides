@@ -11,16 +11,29 @@
 \usetikzlibrary{shapes,arrows}
 \usepackage{float}
 \usepackage{/u/w/e/welch/R-3.1.0/share/texmf/tex/latex/Sweave}
-
+\usepackage{verbatim}
 \usepackage{fancyvrb}
 
 %\usepackage{pifont}% http://ctan.org/pkg/pifont
 
 
 
+\DefineVerbatimEnvironment{Sinput}{Verbatim}
+{formatcom = {\color{Sinput}},fontsize=\scriptsize} 
+\DefineVerbatimEnvironment{Soutput}{Verbatim}
+{formatcom = {\color{Soutput}},fontsize=\footnotesize}
+\DefineVerbatimEnvironment{Scode}{Verbatim}
+{formatcom = {\color{Scode}},fontsize=\small}
+
+
+\definecolor{Sinput}{rgb}{0.75,0.19,0.19}
+\definecolor{Soutput}{rgb}{0,0,0}
+\definecolor{Scode}{rgb}{0.75,0.19,0.19}
 
 \usetheme{Szeged}
 \usecolortheme[named=RoyalBlue]{structure}
+
+
 %\usecolortheme[accent=blue]{solarized}
 
 
@@ -42,6 +55,9 @@
 {formatcom = {\color{Soutput}},fontsize=\footnotesize}
 \DefineVerbatimEnvironment{Scode}{Verbatim}
 {formatcom = {\color{Scode}},fontsize=\small}
+
+
+
 
 \ifdefined\knitrout
   \renewenvironment{knitrout}{\begin{footnotesize}}{\end{footnotesize}}
@@ -244,7 +260,7 @@ For this example we are going to load the package and parameters:
 
 @ 
 
-<<outputload,include=TRUE,tidy=TRUE>>=
+<<outputload,include=TRUE,results = "asis">>=
   library(profile)
 
   regionName = "CTCF-K562"
@@ -287,7 +303,7 @@ We define our regions as:
 
 \section{How to generate the profiles}
 \begin{frame}
-\frametitle{How to generate the profiles (1 of 2) }
+\frametitle{How to generate the profiles (1 of 3) }
 
 \begin{enumerate}
 \item We need to create {\color{RoyalBlue} profile} and then add regions to the  object:
@@ -319,7 +335,7 @@ regions(ourProfile) = ourRegions
 \end{frame}
 
 \begin{frame}
-\frametitle{How to generate the profiles (2 of 2) }
+\frametitle{How to generate the profiles (2 of 3) }
 
 
 \begin{enumerate}
@@ -330,19 +346,194 @@ regions(ourProfile) = ourRegions
 ourProfile = getCoverage(ourProfile,mc.cores)
 @ 
 
-\item And finally, calculate the profile matrix:
+\item Calculate the profile matrix and normalize it:
 
 <<calcProfileMatrix,include=TRUE,echo=TRUE,eval=FALSE,results="asis">>=
 ourProfileMatrix = ProfileMatrix(ourProfile,
   bandwidth,
   mc.cores)
+
+ourProfileMatrix = normalize.matrix(
+  ourProfileMatrix)
+@ 
+
+\end{enumerate}
+\end{frame}
+
+\begin{frame}
+\frametitle{A brief note about profileMatrix}
+
+\only<1>{
+\begin{enumerate}
+\item We can add column vectors to our regions:
+
+<<addCol2,include=TRUE,echo=TRUE,eval=FALSE,results="asis">>=
+  dnaseOverlap =  countOverlaps(regions(ourProfileMatrix),
+    regions[[2]])
+  pol2bOverlap = countOverlaps(regions(ourProfileMatrix),
+    regions[[3]])
+
+  ourProfileMatrix = addColumn(ourProfileMatrix,
+    "dnase",
+    dnaseOverlap)
+
+  elementMetadata(regions(ourProfileMatrix))[["pol2b"]] =
+    pol2bOverlap
+@ 
+
+It's also possible to add a vector as {\color{Soutput} {\color{Scode} regions}(ourProfileMatrix)\$dnase {\color{Scode}=} dnaseOverlap}
+
+\end{enumerate}
+}
+
+\only<2>{
+\begin{enumerate}
+\addtocounter{enumi}{1}
+\item And then subseting (this method returns another {\color{RoyalBlue} profileMatrix}:
+
+<<subsetProfileMatrix,include=TRUE,echo=TRUE,eval=FALSE,results="asis">>=
+  subset.pm(ourProfileMatrix,dnase > 0)
+
+  subset.pm(ourProfileMatrix,dnase > 0 | pol2b > 0)
+
+  subset.pm(ourProfileMatrix,seqnames == "chr1")
+@ 
+
+\item Or averaging (all are coordinate-wise):
+
+\begin{enumerate}
+\item Mean
+
+<<meanProfileMatrix,include=TRUE,echo=TRUE,eval=FALSE,results="asis">>=
+  meanProfile(ourProfileMatrix)
+@ 
+
+\item Median
+<<medianProfileMatrix,include=TRUE,echo=TRUE,eval=FALSE,results="asis">>=
+  meanProfile(ourProfileMatrix,trim = 0.5) 
+@ 
+
+\item Trimmed mean
+
+<<trimMpeanProfileMatrix,include=TRUE,echo=TRUE,eval=FALSE,results="asis">>=
+  meanProfile(ourProfileMatrix,trim = .1)
 @ 
 
 \end{enumerate}
 
 
+\end{enumerate}
+}
+
 \end{frame}
 
+
+
+\begin{frame}
+\frametitle{How to generate the profiles (3 of 3) }
+
+We repeat the previous procedure for several reads files, and save all of them under {\color{RoyalBlue} ourProfileMatrices}. Then, we can convert them into a {\color{RoyalBlue} profileMatrixList}, which is the object we are going to use to plot
+
+<<profMatrixList,include=TRUE,echo=TRUE,eval=FALSE,results="asis">>=
+  ourProfileMatrixList = ProfileMatrixList(
+
+    ourProfileMatrices)
+@ 
+
+\end{frame}
+
+\section{Examples}
+\begin{frame}
+\frametitle{Plot examples}
+
+\only<1>{
+Base plot
+
+<<plot1,include=TRUE,echo=TRUE,eval=FALSE,results="asis">>=
+
+p1 =plot.profiles(ourProfileMatrices)
+
+print(p1)
+
+@ 
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width = .6\textwidth]{figs/generated/basis.pdf}
+\end{figure}
+}
+
+\only<2>{
+Minor format
+
+<<plot2,include=TRUE,echo=TRUE,eval=FALSE,results="asis">>=
+p2 = p1 + theme(legend.position = "bottom")+ggtitle("K562 histone profile")
+
+print(p2)
+@ 
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width = .6\textwidth]{figs/generated/basisText.pdf}
+\end{figure}
+
+}
+
+\only<3>{
+But maybe I want other colors and solid lines:
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width = .75\textwidth]{figs/generated/basisfull.pdf}
+\end{figure}
+}
+
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Plot examples II}
+
+\only<1>{
+Imagine that instead, we want median profiles and relative distances
+
+<<plot3,include=TRUE,echo=TRUE,eval=FALSE,results="asis",tidy=TRUE>>=
+q1 = plot.profiles(ourProfileMatrices,trim=0.5,
+  coord = seq(-windowExt,windowExt),
+  condition = dnase > 0 )
+
+q1 = q1+  theme(legend.position ="bottom")+
+
+ggtitle("K562 histone profile")+
+
+ ylab("normalized counts")+
+
+ xlab("distance from summit")
+
+
+print(q1)
+@ 
+}
+
+\only<2>{
+\begin{figure}[h!]
+\centering
+\includegraphics[width = .65\textwidth]{figs/generated/medianprofile.pdf}
+\end{figure}
+
+}
+
+\only<3>{
+Using {\color{Scode} scale\_linetype\_manual} and {\color{Scode} geom\_vline} we can add more effects:
+
+
+\begin{figure}[h]
+\centering
+\includegraphics[width = .55\textwidth]{figs/generated/medianprofileExtra.pdf}
+\end{figure}
+}
+
+\end{frame}
 
 
 
