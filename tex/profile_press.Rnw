@@ -336,7 +336,7 @@ regions(ourProfile) = ourRegions
 
 \end{frame}
 
-\begin{frame}
+\begin{frame}[fragile]
 \frametitle{How to generate the profiles (2 of 3) }
 
 
@@ -369,9 +369,10 @@ ourProfileMatrix = normalize.matrix(
 \begin{enumerate}
 \item We can add column vectors to our regions:
 
-<<addCol2,include=TRUE,echo=TRUE,eval=FALSE,results="asis">>=
+<<addCol2,include=TRUE,echo=TRUE,eval=FALSE,results="asis",tidy=TRUE>>=
   dnaseOverlap =  countOverlaps(regions(ourProfileMatrix),
     regions[[2]])
+
   pol2bOverlap = countOverlaps(regions(ourProfileMatrix),
     regions[[3]])
 
@@ -381,6 +382,8 @@ ourProfileMatrix = normalize.matrix(
 
   elementMetadata(regions(ourProfileMatrix))[["pol2b"]] =
     pol2bOverlap
+
+
 @ 
 
 It's also possible to add a vector as {\color{Soutput} {\color{Scode} regions}(ourProfileMatrix)\$dnase {\color{Scode}=} dnaseOverlap}
@@ -591,20 +594,25 @@ print(p)
 \end{frame}
 
 
-\begin{frame}
+\begin{frame}[fragile]
 \frametitle{Final remarks}
 
+\onslide<1->{
 The source for the slides are in {\color{RoyalBlue} \url{https://github.com/welch16/profile_slides}}
-and the package is in {\color{RoyalBlue} \url{https://github.com/welch16/profile}}, or 
 
+The package is in {\color{RoyalBlue} \url{https://github.com/welch16/profile}}, 
+
+or 
 
 {\color{Scode} devtools}::{\color{Scode} install\_github}(repo = {\color{RoyalBlue}'profile'},user = {\color{RoyalBlue}'welch16'})
+}
 
+\onslide<2>{
 \vspace{1 cm}
 \begin{center}
 {\color{RoyalBlue} {\Huge Thank you very much}}
 \end{center}
-
+}
 
 \end{frame}
 
