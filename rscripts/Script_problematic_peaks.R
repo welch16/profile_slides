@@ -3,16 +3,14 @@ rm(list = ls())
 #library(profile)
 library(profile)
 
-load("../data/regions/problematic_peaks_140812.RData") # This contains the bam files to be used as character
-                                       # vector and the regions of interest as GRangesList
-
+load("../data/regions_RData/problematic_peaks_140812.RData") 
 widthPara <- 501            
 maxBw <- 1
 regionName <- "Consensus Peaks"
 rChr <- ""
 fl <- 200
 mc <- 8
-regions <- regions[[1]]    # Used to be GRangesList, changed it to GRanges
+regions <- regions[[1]]  
 figsdir = "../tex/figs/generated"
 
 test_all <- function(file, regionName, maxBw, fl, regions, rChr, mc = 8)
@@ -43,7 +41,7 @@ names(profileMatrices) = profileNames
 starts = start(regions)
 ends = end(regions)
 
-pdf(file = file.path(figsdir,"Problematic_peaks.pdf"),width = 6,height = 4)
+pdf(file = file.path(figsdir,"ProblematicPeaks.pdf"),width = 6,height = 4)
 i=1
 for(st in starts){
   p = plot.profiles(profileMatrices,condition = start == st)+
