@@ -588,10 +588,25 @@ print(p)
 
 }
 
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Final remarks}
+
+The source for the slides are in {\color{RoyalBlue} \url{https://github.com/welch16/profile_slides}}
+and the package is in {\color{RoyalBlue} \url{https://github.com/welch16/profile}}, or 
+
+
+{\color{Scode} devtools}::{\color{Scode} install\_github}(repo = {\color{RoyalBlue}'profile'},user = {\color{RoyalBlue}'welch16'})
+
+\vspace{1 cm}
+\begin{center}
+{\color{RoyalBlue} {\Huge Thank you very much}}
+\end{center}
 
 
 \end{frame}
-
 
 
 \end{document}
