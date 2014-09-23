@@ -105,20 +105,22 @@ figsdir = "figs/generated"
 
 \only<1>{
 \begin{itemize}
-\item The double stranded {\color{RoyalBlue} DNA}
+\item The double stranded {\color{RoyalBlue} DNA}, we sonite and obtain fragments
 \end{itemize}}
 \only<2>{
 \begin{itemize}
-\item There is an interaction with a protein (TF or histone)
-\end{itemize}}
+\item Add antibodies to target the protein
+\end{itemize}
+}
 \only<3>{
 \begin{itemize}
-\item The protein is removed by an antibody
+\item Unlink the protein, purify the DNA
 \end{itemize}}
 \only<4-6>{
 \begin{itemize}
 \item The DNA is fragmented by sonication
-\end{itemize}}
+\end{itemize}
+}
 
 \begin{figure}[h!]
 \centering
@@ -238,7 +240,7 @@ For this example we are going to load the package and parameters:
   dir = "../data"
   dir1 = file.path(dir,"regions")
   dir2 = file.path(dir,"bam")
-  peakfiles = file.path(dir1,list.files(dir1))
+  peakfiles = file.path(dir1,list.files(dir1))  
   regions = lapply(peakfiles,narrowPeakToGRanges)
   
   regionName = "CTCF-K562"
@@ -443,6 +445,7 @@ We repeat the previous procedure for several reads files, and save all of them u
 \end{frame}
 
 \section{Examples}
+\subsection{Calculating average profiles}
 \begin{frame}
 \frametitle{Plot examples}
 
@@ -526,7 +529,6 @@ print(q1)
 \only<3>{
 Using {\color{Scode} scale\_linetype\_manual} and {\color{Scode} geom\_vline} we can add more effects:
 
-
 \begin{figure}[h]
 \centering
 \includegraphics[width = .55\textwidth]{figs/generated/medianprofileExtra.pdf}
@@ -535,7 +537,60 @@ Using {\color{Scode} scale\_linetype\_manual} and {\color{Scode} geom\_vline} we
 
 \end{frame}
 
+\subsection{Plotting peaks}
+\begin{frame}
+\frametitle{How to plot peaks}
 
+For this example it's possible to follow the {\color{RoyalBlue} Script\_problematic\_peaks.R'} file in rscripts. For which we obtain a {\color{RoyalBlue} profileMatrixList} with all the samples:
+
+To plot all peaks, we can do a {\color{Scode} for} looping instructions as:
+
+<<plotPeaksAll,include=TRUE,echo=TRUE,eval=FALSE,results="asis">>=
+p = plot.profiles(profileMatrices,
+
+condition = start == starts[i])+
+
+ggtitle(paste0("U00096.2:",starts[i],"-",ends[i]))
+
+print(p)
+@ 
+
+
+\end{frame}
+
+\begin{frame}[t]
+\frametitle{Some particular peak examples}
+
+\only<1>
+{
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.85\textwidth,page = 3]{figs/generated/ProblematicPeaks.pdf}
+\end{figure}
+
+}
+
+\only<2>
+{
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.85\textwidth,page = 5]{figs/generated/ProblematicPeaks.pdf}
+\end{figure}
+
+}
+
+\only<3>
+{
+\begin{figure}[h]
+\centering
+\includegraphics[width = 0.85\textwidth,page = 20]{figs/generated/ProblematicPeaks.pdf}
+\end{figure}
+
+}
+
+
+
+\end{frame}
 
 
 
