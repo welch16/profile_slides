@@ -36,7 +36,7 @@ return(ourProfile)},ourRegions)
 
 # Create profile matrices
 ourProfiles = lapply(ourProfiles,function(x)
-  loadReads(x,mc.cores))
+  loadReads(x,6))
 
 ourProfiles = lapply(ourProfiles,function(x)
   matchReads(x,mc.cores))
